@@ -1,3 +1,4 @@
+import java.io.File;
 import java.sql.*;
 
 public class Main {
@@ -6,11 +7,12 @@ public class Main {
         Connection con = null;
         Statement stmt = null;
         ResultSet res = null;
+
         try {
             Driver d = (Driver) Class.forName("org.sqlite.JDBC").newInstance();
 //            DriverManager.registerDriver(d);
 
-            String url = "jdbc:sqlite:C:/Users/Tania/IdeaProjects/JtableAndJDBC/db/CarShop.db";
+            String url = "jdbc:sqlite:"+ new File("db/CarShop.db").getAbsolutePath();
             con = DriverManager.getConnection(url);
 
             String sql = "SELECT * FROM spr_Model";
@@ -29,8 +31,15 @@ public class Main {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (res != null) res.close();
+                if (stmt != null) stmt.close();
+                if (con != null) con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
-
 
     }
 }
