@@ -1,9 +1,13 @@
 import java.io.File;
 import java.sql.*;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
+
+        JTableFromArray.createFrame();
+
         Connection con = null;
         Statement stmt = null;
         ResultSet res = null;
@@ -13,7 +17,8 @@ public class Main {
 //            DriverManager.registerDriver(d);
 
             String url = "jdbc:sqlite:"+ new File("db/CarShop.db").getAbsolutePath();
-            con = DriverManager.getConnection(url);
+            if (con == null || con.isValid(500)) con = DriverManager.getConnection(url);
+
 
             String sql = "SELECT * FROM spr_Model";
             stmt = con.createStatement();
