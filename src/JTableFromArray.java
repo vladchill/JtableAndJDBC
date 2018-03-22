@@ -1,5 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.net.URI;
 
 public class JTableFromArray {
 
@@ -20,8 +24,8 @@ public class JTableFromArray {
 
         frame.getContentPane().setLayout(new FlowLayout());
 
-        frame.setSize(400, 200);
-//        frame.setLocationRelativeTo(null);
+        frame.setSize(500, 300);
+        frame.setLocationRelativeTo(null);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -30,44 +34,46 @@ public class JTableFromArray {
         jtableFIO.setRowHeight(30);
 
 //        jtableFIO.setDefaultRenderer(Object.class, new MyTableRenderer());
-//
-//        jtableFIO.addMouseListener(new MouseAdapter() {
-//
-//            public void mouseClicked(MouseEvent e) {
-//                if (e.getClickCount() == 1) {
-//                    JTable target = (JTable) e.getSource();
-//                    String value = target.getValueAt(target.getSelectedRow(), target.getSelectedColumn()).toString();
-//
-//                    try {
-//                        if (value.contains("@")) {
-//                            Desktop.getDesktop().mail(new URI("mailto:" + value + "?SUBJECT=Служебное%20письмо&body=Текст%20письма"));
-//                        }
-//
-//                    } catch (Exception ex) {
-//                        ex.printStackTrace();
-//                    }
-//                }
-//            }
-//        });
-//
-//        jtableFIO.addMouseMotionListener(new MouseMotionAdapter() {
-//
-//            @Override
-//            public void mouseMoved(MouseEvent e) {
-//                JTable target = (JTable) e.getSource();
-//                if (target.columnAtPoint(e.getPoint())==3){
-//                    target.setCursor(new Cursor(Cursor.HAND_CURSOR));
-//                }else{
-//                    target.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-//                }
-//            }
-//        });
+
+        jtableFIO.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 1) {
+                    JTable target = (JTable) e.getSource();
+                    String value = target.getValueAt(target.getSelectedRow(), target.getSelectedColumn()).toString();
+
+                    try {
+                        if (value.contains("@")) {
+                            Desktop.getDesktop().mail(new URI("mailto:" + value + "?SUBJECT=Служебное%20письмо&body=Текст%20письма"));
+                        }
+
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        jtableFIO.addMouseMotionListener(new MouseMotionAdapter() {
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                JTable target = (JTable) e.getSource();
+                if (target.columnAtPoint(e.getPoint())==3){
+                    target.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                }else{
+                    target.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            }
+        });
 
 
         JScrollPane scroll = new JScrollPane(jtableFIO);
 
         // размеры прокручиваемой области
         jtableFIO.setPreferredScrollableViewportSize(new Dimension(400, 200));
+        jtableFIO.setAutoCreateRowSorter(true);
 
         frame.getContentPane().add(scroll);
 
