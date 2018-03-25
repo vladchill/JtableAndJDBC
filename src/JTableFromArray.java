@@ -1,3 +1,5 @@
+import temp.MyTableRenderer;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -33,7 +35,7 @@ public class JTableFromArray {
 
         jtableFIO.setRowHeight(30);
 
-//        jtableFIO.setDefaultRenderer(Object.class, new MyTableRenderer());
+        jtableFIO.setDefaultRenderer(Object.class, new MyTableRenderer());
 
         jtableFIO.addMouseListener(new MouseAdapter() {
 
