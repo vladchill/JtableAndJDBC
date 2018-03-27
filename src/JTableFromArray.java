@@ -5,7 +5,11 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 
 public class JTableFromArray {
 
@@ -14,7 +18,7 @@ public class JTableFromArray {
 
         //Массив с данными для таблицы
         Object[][] tableData = {
-                {"Иванов", "Иван", "Иванович", "test1@mail.ru"},
+                {"Иванов", "Иван", new Integer(1), "test1@mail.ru"},
                 {"Петров", "Олег", "Петрович", "test2@mail.ru"},
                 {"Алексеев", "Алексей", "Алексеевич", "test3@mail.ru"},
                 {"Сидоров", "Сидор", "Сидорович", "test4@mail.ru"},
@@ -48,6 +52,7 @@ public class JTableFromArray {
                     try {
                         if (value.contains("@")) {
                             Desktop.getDesktop().mail(new URI("mailto:" + value + "?SUBJECT=Служебное%20письмо&body=Текст%20письма"));
+//                            System.out.println(URLEncoder.encode("?SUBJECT=Служебное письмо&body=Текст письма", "UTF-8"));
                         }
 
                     } catch (Exception ex) {

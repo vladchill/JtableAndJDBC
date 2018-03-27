@@ -25,12 +25,13 @@ public class JTableEdit {
             final MyTableModel mod = new MyTableModel(con, TABLE_NAME);
             
             JTable jtable = new JTable(mod);
-            //jtable.setAutoCreateRowSorter(true);
+
             TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(mod);
             jtable.setRowSorter(sorter);
             
             MyTableRenderer cellRenderer = new MyTableRenderer();
             jtable.setDefaultRenderer(Object.class, cellRenderer);
+            jtable.setDefaultRenderer(Integer.class, cellRenderer);
             
             JScrollPane scroller = new JScrollPane(jtable, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             
@@ -70,29 +71,23 @@ public class JTableEdit {
                     
                 }
             });
-            
+
             jtable.getModel().addTableModelListener(new TableModelListener() {
-                
+
                 @Override
                 public void tableChanged(TableModelEvent e) {
                     int row = e.getFirstRow();
-                    
                     int column = e.getColumn();
-                    
-                    System.out.println(row+" "+column);
-                    
+
+                    System.out.println("changed=" + row + " " + column);
+
                     TableModel model = (TableModel) e.getSource();
                     String columnName = model.getColumnName(column);
                     Object data = model.getValueAt(row, column);
                 }
-                
-                
-            }); 
-            
+            });
             
             frame.setVisible(true);
-            
-//            con.close();
             
         } catch (Exception e) {
             e.printStackTrace();

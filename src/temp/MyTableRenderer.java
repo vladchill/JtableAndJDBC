@@ -15,6 +15,7 @@ public class MyTableRenderer extends DefaultTableCellRenderer {
             int row,
             int column) {
 
+        setToolTipText("Click for sort like ="+value.getClass().getSimpleName());
         setText(value.toString());
 
 
@@ -26,11 +27,8 @@ public class MyTableRenderer extends DefaultTableCellRenderer {
             setForeground(Color.BLACK);
         }
 
-
         if (value.toString().contains("@")) setValue("<html><a href=\"#\">"+value+"</href></html>");
-        
 
         return this;
-
     }
 }

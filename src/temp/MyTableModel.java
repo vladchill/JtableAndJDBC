@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import javax.swing.event.TableModelEvent;
 
 public class MyTableModel extends AbstractTableModel {
-    
+
     private static Connection conn;// соединение с базой данных
 
     private Object[][] contents;// хранит данные
@@ -16,7 +16,7 @@ public class MyTableModel extends AbstractTableModel {
     private Class[] columnClasses; // хранит типы столбцов
 
     public MyTableModel(Connection conn,
-            String tableName)
+                        String tableName)
             throws SQLException {
         super();
         MyTableModel.conn = conn;
@@ -41,6 +41,7 @@ public class MyTableModel extends AbstractTableModel {
             colNamesList.add(rs.getString("COLUMN_NAME"));// добавить в список имя столбца
 
             int dbType = rs.getInt("DATA_TYPE");// определить тип столбца
+            System.out.println(rs.getString("DATA_TYPE"));
 
             // выбрать нужный тип
             switch (dbType) {
@@ -62,8 +63,7 @@ public class MyTableModel extends AbstractTableModel {
                 default:
                     colTypesList.add(String.class);
                     break;
-            };
-
+            }
         }
 
         // имена столбцов сохранить в отдельный массив columnNames
@@ -92,7 +92,7 @@ public class MyTableModel extends AbstractTableModel {
                 } else if (columnClasses[i] == Integer.class) {
                     cellValue = new Integer(rs.getInt(columnNames[i]));
                 } else if (columnClasses[i] == Float.class) {
-                    cellValue = new Float(rs.getInt(columnNames[i]));
+                    cellValue = new Float(rs.getFloat(columnNames[i]));
                 } else if (columnClasses[i] == Double.class) {
                     cellValue = new Double(rs.getDouble(columnNames[i]));
                 } else if (columnClasses[i] == java.sql.Date.class) {
@@ -102,58 +102,58 @@ public class MyTableModel extends AbstractTableModel {
                 }
 
                 cellList.add(cellValue);
-            }// for
+            }
 
             Object[] cells = cellList.toArray();
             rowList.add(cells);
-
-        } // while
+        }
 
         contents = new Object[rowList.size()][];
         for (int i = 0; i < contents.length; i++) {
             contents[i] = (Object[]) rowList.get(i);
         }
 
-        if (rs!=null ) rs.close();
-        if (statement!=null ) statement.close();
+        if (rs != null) rs.close();
+        if (statement != null) statement.close();
 
     }
-    
-    
-     public boolean updateDB(String tableName) {
-         
+
+    private void addToSqlStatementCache(){
+
+    }
+
+
+    public boolean updateDB(String tableName) {
+
         ArrayList<String> sqlList = new ArrayList();
-        
+
         for (int i = 0; i < contents.length; i++) {
             Object[] objects = contents[i];
             sqlList.add("update " + tableName + " set name_ru='" + objects[1] + "', name_en='" + objects[2] + "' where id=" + objects[0] + ";");
         }
 
         Statement statement = null;
-        
+
         try {
             statement = conn.createStatement();
-            
+
             for (String sql : sqlList) {
                 statement.executeUpdate(sql);
             }
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(MyTableModel.class.getName()).log(Level.SEVERE, null, ex);
             return false;
-        }finally{
+        } finally {
             try {
-                if (statement!=null) statement.close();
+                if (statement != null) statement.close();
             } catch (SQLException ex) {
                 Logger.getLogger(MyTableModel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
         return true;
-
     }
-     
-     
+
 
     @Override
     public int getRowCount() {
@@ -177,7 +177,7 @@ public class MyTableModel extends AbstractTableModel {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         contents[rowIndex][columnIndex] = aValue;
-
+        //need string update in database
         fireTableCellUpdated(rowIndex, columnIndex);
     }
 
@@ -193,11 +193,13 @@ public class MyTableModel extends AbstractTableModel {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        if (columnIndex == 0) {
+        if (getColumnName(columnIndex).equals("id")){
+            System.out.println("columnName="+getColumnName(columnIndex));
             return false;
         }
+//        if (columnIndex == 0) {
+//            return false;
+//        }
         return true;
     }
-
-   
 }
