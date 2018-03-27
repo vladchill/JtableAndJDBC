@@ -45,29 +45,29 @@ public class JTableEdit {
             JPanel panel = new JPanel();
             panel.add(refreshButton);
             panel.add(scroller);
-            
+
             frame.getContentPane().add(panel);
-            
+
             frame.addWindowStateListener(new WindowAdapter() {
 
                 @Override
                 public void windowClosed(WindowEvent e) {
-                    if (con!=null) try {
+                    if (con != null) try {
                         con.close();
                     } catch (SQLException ex) {
                         Logger.getLogger(JTableEdit.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-            
+
             });
-            
+
             refreshButton.addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (mod.updateDB(TABLE_NAME)) JOptionPane.showMessageDialog(null, "Данные упешно обновлены!");
                     else JOptionPane.showMessageDialog(null, "Ошибка при обновлении данных!");
-                    
+
                 }
             });
 
