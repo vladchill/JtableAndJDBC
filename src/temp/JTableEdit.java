@@ -15,7 +15,7 @@ import javax.swing.table.TableRowSorter;
 
 public class JTableEdit {
     
-    private static final String TABLE_NAME = "spr_Model";
+    public static final String TABLE_NAME = "spr_Model";
     
     public static void main(String[] args) {
         try {
@@ -62,7 +62,6 @@ public class JTableEdit {
             });
             
             refreshButton.addActionListener(new ActionListener() {
-                
 
                 @Override
                 public void actionPerformed(ActionEvent e) {

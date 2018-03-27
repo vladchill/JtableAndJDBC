@@ -5,7 +5,6 @@ import java.sql.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.event.TableModelEvent;
 
 public class MyTableModel extends AbstractTableModel {
 
@@ -14,6 +13,7 @@ public class MyTableModel extends AbstractTableModel {
     private Object[][] contents;// хранит данные
     private String[] columnNames; // хранит имена столбцов
     private Class[] columnClasses; // хранит типы столбцов
+    private HashSet<String> cacheSqlList = new HashSet<>();
 
     public MyTableModel(Connection conn,
                         String tableName)
@@ -118,26 +118,32 @@ public class MyTableModel extends AbstractTableModel {
 
     }
 
-    private void addToSqlStatementCache(){
-
+    private void addToSqlStatementCache(Object[] objects){
+        System.out.println("Prepare to update="+"update " + JTableEdit.TABLE_NAME + " set name_ru='" + objects[1] + "', name_en='" + objects[2] + "' where id=" + objects[0] + ";" );
+        cacheSqlList.add("update " + JTableEdit.TABLE_NAME + " set name_ru='" + objects[1] + "', name_en='" + objects[2] + "' where id=" + objects[0] + ";");
     }
 
 
     public boolean updateDB(String tableName) {
 
-        ArrayList<String> sqlList = new ArrayList();
-
-        for (int i = 0; i < contents.length; i++) {
-            Object[] objects = contents[i];
-            sqlList.add("update " + tableName + " set name_ru='" + objects[1] + "', name_en='" + objects[2] + "' where id=" + objects[0] + ";");
-        }
+//        ArrayList<String> sqlList = new ArrayList();
+//
+//        for (int i = 0; i < contents.length; i++) {
+//            Object[] objects = contents[i];
+//            sqlList.add("update " + tableName + " set name_ru='" + objects[1] + "', name_en='" + objects[2] + "' where id=" + objects[0] + ";");
+//        }
 
         Statement statement = null;
 
         try {
             statement = conn.createStatement();
 
-            for (String sql : sqlList) {
+            if (cacheSqlList.isEmpty()) {
+                System.out.println("List is empty");
+                return false;
+            }
+
+            for (String sql : cacheSqlList) {
                 statement.executeUpdate(sql);
             }
 
@@ -146,6 +152,7 @@ public class MyTableModel extends AbstractTableModel {
             return false;
         } finally {
             try {
+                if (cacheSqlList !=null ) cacheSqlList.clear();
                 if (statement != null) statement.close();
             } catch (SQLException ex) {
                 Logger.getLogger(MyTableModel.class.getName()).log(Level.SEVERE, null, ex);
@@ -177,7 +184,7 @@ public class MyTableModel extends AbstractTableModel {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         contents[rowIndex][columnIndex] = aValue;
-        //need string update in database
+        addToSqlStatementCache(contents[rowIndex]);
         fireTableCellUpdated(rowIndex, columnIndex);
     }
 
